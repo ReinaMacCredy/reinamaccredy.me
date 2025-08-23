@@ -1,0 +1,1 @@
+Inspired by [Sofieru](https://sofieru.com/), [DarkGuy10](https://promptfolio.vercel.app/) and [aiko-chan-ai ](https://aiko-chan-ai.github.io/) <3
