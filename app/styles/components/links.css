@@ -1,0 +1,32 @@
+.links {
+    display: flex;
+    justify-content: var(--flex-alignment);
+    letter-spacing: 0;
+    line-height: 1.5;
+    padding: 0;
+}
+.links li {
+    position: relative;
+    text-align: var(--alignment);
+}
+.links li a {
+    direction: var(--site-language-direction);
+    display: block;
+}
+#links02 {
+    gap: 3rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    font-family: "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    letter-spacing: 0.1rem;
+    margin-right: -0.1rem;
+    font-size: 0.625em;
+    font-weight: 400;
+}
+#links02 li a {
+    color: #999999;
+    text-decoration: underline;
+}
+#links02 li a:hover {
+    text-decoration: none;
+}

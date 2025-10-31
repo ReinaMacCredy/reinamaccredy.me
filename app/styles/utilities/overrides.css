@@ -1,0 +1,77 @@
+
+.no-border-radius {
+border-radius: 0 !important;
+}
+
+
+
+
+@media (max-width: 736px) {
+    
+    #container06 > .slideshow-background > div {
+        transition-duration: 2s; 
+    }
+    
+    
+    #container06 > .slideshow-background > .slow,
+    #container06 > .slideshow-background > .normal,
+    #container06 > .slideshow-background > .fast {
+        animation: none !important; 
+    }
+    
+    
+    #container06 > .slideshow-background {
+        background-attachment: scroll; 
+        will-change: auto; 
+    }
+}
+
+
+@media (hover: none) and (pointer: coarse) {
+    
+    #container06 > .slideshow-background > div {
+        transform: none !important;
+    }
+    
+    
+    #terminal-container {
+        -webkit-overflow-scrolling: touch;
+        touch-action: manipulation;
+    }
+    
+    .terminal-body {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+
+@media (max-width: 360px) {
+    #container06 {
+        min-height: 10rem; 
+    }
+    
+    #container06.columns > .wrapper > .inner > .full {
+        min-height: calc(10rem - (var(--padding-vertical) * 2));
+    }
+    
+    
+    #container06 > .slideshow-background {
+        background-size: contain; 
+    }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    #container06 > .slideshow-background > div {
+        animation: none !important;
+        transition: none !important;
+    }
+    
+    #container06 > .slideshow-background {
+        background-image: url("/assets/images/container06-67b79e7f.jpg") !important;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+}
+

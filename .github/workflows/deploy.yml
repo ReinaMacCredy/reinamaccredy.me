@@ -1,4 +1,4 @@
-name: Build and Deploy Static Web
+name: Build and Deploy Portfolio
 
 on:
   push:
@@ -9,6 +9,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
     - name: Checkout
@@ -28,21 +30,21 @@ jobs:
         
     - name: Generate build info
       run: |
-        echo "Build completed at $(date)" > dist/build-info.txt
-        echo "Git commit: ${{ github.sha }}" >> dist/build-info.txt
-        du -sh dist/ >> dist/build-info.txt
+        echo "Build completed at $(date)" > out/build-info.txt
+        echo "Git commit: ${{ github.sha }}" >> out/build-info.txt
+        du -sh out/ >> out/build-info.txt
         
     - name: Deploy to GitHub Pages
       if: github.ref == 'refs/heads/main'
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
+        publish_dir: ./out
         force_orphan: true
         
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: optimized-portfolio
-        path: dist/
+        path: out/
         retention-days: 30

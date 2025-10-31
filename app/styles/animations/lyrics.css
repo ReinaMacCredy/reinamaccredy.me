@@ -1,0 +1,95 @@
+.lyrics-zone-fixed {
+min-height: 0;
+max-height: 60px;
+overflow: hidden;
+margin: 0;
+transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+            min-height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+            margin 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+opacity: 0;
+will-change: opacity;
+backface-visibility: hidden;
+height: 0;
+}
+
+.lyrics-zone-fixed.active {
+opacity: 1;
+min-height: 60px;
+margin: 8px 0;
+height: auto;
+}
+
+.lyrics-container {
+display: flex;
+align-items: center;
+justify-content: center;
+line-height: 1.8;
+margin: 0;
+padding: 0;
+border: none;
+background: none;
+height: 100%;
+text-align: center;
+color: var(--ctp-text);
+}
+
+.lyrics-container:not(:empty) {
+opacity: 1;
+}
+
+.lyric-line {
+display: block;
+margin: 4px 0;
+padding: 0;
+border: none;
+background: none;
+will-change: transform, opacity, filter;
+backface-visibility: hidden;
+font-size: 16px;
+color: var(--ctp-text);
+transition: none;
+opacity: 1;
+visibility: visible;
+}
+
+.lyric-line.lyric-active {
+color: var(--ctp-text);
+}
+
+.lyric-line.lyric-static {
+opacity: 0.6;
+color: var(--ctp-subtext1);
+transition: opacity 0.3s ease, color 0.3s ease;
+}
+
+.lyric-line .char {
+display: inline-block;
+will-change: transform, opacity, filter;
+}
+
+@media (max-width: 768px) {
+.lyric-line {
+font-size: 14px;
+}
+}
+
+@media (min-width: 1024px) {
+.lyric-line {
+font-size: 18px;
+}
+}
+
+.lyric-line {
+contain: layout style;
+will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+.lyric-line,
+.lyric-line .char {
+animation: none !important;
+transition: opacity 0.3s ease !important;
+transform: none !important;
+filter: none !important;
+}
+}

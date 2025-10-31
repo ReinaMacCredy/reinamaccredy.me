@@ -1,0 +1,129 @@
+.image {
+    display: block;
+    line-height: 0;
+    max-width: 100%;
+    position: relative;
+}
+.image .frame img {
+    border-radius: 0 !important;
+    max-width: 100%;
+    vertical-align: top;
+    width: inherit;
+}
+
+
+#container01 .image .frame img {
+    border-radius: inherit !important;
+}
+
+#container01 .image .frame {
+    border-radius: inherit;
+    overflow: hidden;
+}
+
+#container01 .image {
+    border-radius: inherit;
+}
+
+
+#container01 #image04,
+#container01 #image05 {
+    border-radius: 1.5rem !important;
+}
+
+#container01 #image04 .frame,
+#container01 #image05 .frame {
+    border-radius: 1.5rem !important;
+}
+
+#container01 #image04 .frame img,
+#container01 #image05 .frame img {
+    border-radius: 1.5rem !important;
+}
+.image.full .frame {
+    display: block;
+}
+.image.full:first-child .frame {
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+}
+.image.full:last-child .frame {
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
+}
+#image02 {
+    text-align: left;
+}
+#image02 .frame {
+    max-width: 100%;
+    width: auto;
+    transition: none;
+}
+#image02 img {
+    height: 100% !important;
+    object-fit: cover;
+    object-position: top left;
+    width: 100% !important;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+#image02 .frame img {
+    transition: none;
+}
+#image01 {
+    text-align: center;
+}
+#image01 .frame {
+    width: 35rem;
+    height: 27rem;
+    transition: none;
+}
+#image01 img {
+    height: 100% !important;
+    object-fit: cover;
+    object-position: center;
+    width: 100% !important;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+#image01 .frame img {
+    transition: none;
+}
+#image04 {
+    text-align: center;
+}
+#image04 .frame {
+    max-width: 100%;
+    width: 554px;
+    transition: none;
+}
+#image04 img {
+    height: 100% !important;
+    object-fit: cover;
+    object-position: top left;
+    width: 100% !important;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+#image04 .frame img {
+    transition: none;
+}
+#image05 {
+    text-align: center;
+}
+#image05 .frame {
+    max-width: 100%;
+    width: auto;
+    transition: none;
+}
+#image05 img {
+    height: 100% !important;
+    object-fit: cover;
+    object-position: top right;
+    width: 100% !important;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+#image05 .frame img {
+    transition: none;
+}

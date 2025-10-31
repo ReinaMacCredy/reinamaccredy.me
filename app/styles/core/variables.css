@@ -1,0 +1,16 @@
+:root {
+    --background-height: 100vh;
+    --site-language-alignment: left;
+    --site-language-direction: ltr;
+    --site-language-flex-alignment: flex-start;
+    --site-language-indent-left: 1;
+    --site-language-indent-right: 0;
+    --site-language-margin-left: 0;
+    --site-language-margin-right: auto;
+    --viewport-height: 100vh;
+}
+
+html {
+    font-size: 20pt;
+}
+

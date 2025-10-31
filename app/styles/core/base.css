@@ -1,0 +1,109 @@
+body {
+    line-height: 1;
+    min-height: var(--viewport-height);
+    min-width: 320px;
+    overflow-x: hidden;
+    word-wrap: break-word;
+}
+body:before {
+    content: "";
+    display: block;
+    background-attachment: scroll;
+    height: var(--background-height);
+    left: 0;
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    transform: scale(1);
+    width: 100vw;
+    z-index: 0;
+    background-image: linear-gradient(to top, rgba(245, 245, 245, 0.529), rgba(245, 245, 245, 0.529)), url("/assets/images/bg.webp?v=9ba4655d");
+    background-position: 0% 0%, center;
+    background-repeat: repeat, repeat;
+    background-size: auto, cover;
+    background-color: #ffffff;
+}
+body:after {
+    background-color: #272729;
+    content: "";
+    display: block;
+    pointer-events: none;
+    position: fixed;
+    transform: scale(1);
+    z-index: 1;
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    top: 0;
+    transition: opacity 1s ease-in-out 0s, visibility 1s 0s;
+    visibility: hidden;
+    width: 100%;
+}
+body.is-loading:after {
+    opacity: 1;
+    visibility: visible;
+}
+
+u {
+    text-decoration: underline;
+}
+strong {
+    color: inherit;
+    font-weight: bolder;
+}
+em {
+    font-style: italic;
+}
+code {
+    background-color: rgba(144, 144, 144, 0.25);
+    border-radius: 0.25em;
+    font-family: "Lucida Console", "Courier New", monospace;
+    font-size: 0.9em;
+    font-weight: normal;
+    letter-spacing: 0;
+    margin: 0 0.25em;
+    padding: 0.25em 0.5em;
+    text-indent: 0;
+}
+mark {
+    background-color: rgba(144, 144, 144, 0.25);
+}
+spoiler-text {
+    -webkit-text-stroke: 0;
+    background-color: rgba(32, 32, 32, 0.75);
+    text-shadow: none;
+    color: transparent;
+    cursor: pointer;
+    transition: color 0.1s ease-in-out;
+}
+spoiler-text.active {
+    color: #ffffff;
+    cursor: text;
+}
+s {
+    text-decoration: line-through;
+}
+sub {
+    font-size: smaller;
+    vertical-align: sub;
+}
+sup {
+    font-size: smaller;
+    vertical-align: super;
+}
+a {
+    color: inherit;
+    text-decoration: underline;
+    transition: color 0.25s ease;
+}
+a[onclick]:not([href]) {
+    cursor: pointer;
+}
+unloaded-script {
+    display: none;
+}
+
+text-node {
+    display: inline;
+}
+

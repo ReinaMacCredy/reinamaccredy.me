@@ -1,0 +1,44 @@
+# OS artifacts
+.DS_Store
+Thumbs.db
+Icon?
+.Spotlight-V100
+.Trashes
+
+# Node dependencies and logs
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Environment files (keep only examples in repo)
+.env
+.env.*
+!.env.example
+
+# Build outputs / caches / coverage
+out/
+.next/
+dist/
+.cache/
+.parcel-cache/
+coverage/
+.tmp/
+tmp/
+temp/
+demo/
+docs/
+
+# Editor/IDE settings
+.vscode/
+.idea/
+*.swp
+
+# Project backups and temporary artifacts
+backup/
+css/backups/
+*.bak
+*.tmp
+*~
