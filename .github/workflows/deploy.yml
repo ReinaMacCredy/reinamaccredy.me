@@ -1,4 +1,4 @@
-name: Build and Deploy Portfolio
+name: Build Portfolio
 
 on:
   push:
@@ -7,10 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     
     steps:
     - name: Checkout
@@ -33,14 +31,6 @@ jobs:
         echo "Build completed at $(date)" > out/build-info.txt
         echo "Git commit: ${{ github.sha }}" >> out/build-info.txt
         du -sh out/ >> out/build-info.txt
-        
-    - name: Deploy to GitHub Pages
-      if: github.ref == 'refs/heads/main'
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./out
-        force_orphan: true
         
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
