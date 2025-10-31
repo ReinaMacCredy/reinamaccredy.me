@@ -34,6 +34,10 @@ jobs:
         echo "Git commit: ${{ github.sha }}" >> out/build-info.txt
         du -sh out/ >> out/build-info.txt
         
+    - name: Create .nojekyll file
+      run: |
+        touch out/.nojekyll
+        
     - name: Deploy to GitHub Pages
       if: github.ref == 'refs/heads/main'
       uses: peaceiris/actions-gh-pages@v3
