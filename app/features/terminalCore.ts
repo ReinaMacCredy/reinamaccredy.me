@@ -124,20 +124,20 @@ export function initTerminal({ target = '#terminal-container', username = 'reina
     db64: '<>',
     clear: '◈',
     echo: '{}',
-    fun: '🎁',
-    help: '❓',
-    info: 'ⓘ',
-    whoami: '👤',
+    fun: '*',
+    help: '?',
+    info: 'i',
+    whoami: '@',
     banner: '▦',
-    repo: '📦',
-    email: '✉',
-    social: '⚑',
-    myip: '◉',
+    repo: '#',
+    email: '@',
+    social: '+',
+    myip: '.',
     play: '▶',
     stop: '■',
-    projects: '🗂',
-    random: '🎲',
-    lyrics: '🎵',
+    projects: '#',
+    random: '?',
+    lyrics: '~',
     'lyrics-stop': '⏹'
   };
 
@@ -156,8 +156,8 @@ export function initTerminal({ target = '#terminal-container', username = 'reina
   const escapeHtml = (s: string = ''): string => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
   const commands: CommandDefinition[] = [
-    { command: "help", display: "help", description: "List all available commands 🎉", body: () => helpCommand() },
-    { command: "info", display: "info", description: "Get info about me (read if cute :3).", body: () => infoCommand() },
+    { command: "help", display: "help", description: "List all available commands", body: () => helpCommand() },
+    { command: "info", display: "info", description: "Get info about me", body: () => infoCommand() },
     { command: "whoami", display: "whoami", description: "Display logged-in user.", body: () => whoamiCommand() },
     { command: "projects", display: "projects", description: "Display a list of my major projects.", body: () => projectsCommand() },
     { command: "repo", display: "repo", description: "Open repository link.", body: () => repoCommand() },
@@ -167,13 +167,13 @@ export function initTerminal({ target = '#terminal-container', username = 'reina
     { command: "echo", display: "echo [arg ...]", description: "Write arguments to the standard output." },
     { command: "random", display: "random <num>", description: "Return a pseudo-random number between 0 and 1, or you can try to predict the result!" },
     { command: "clear", display: "clear", description: "Clear the terminal screen." },
-    { command: "fun", display: "fun", description: "Try it and see =)" },
+    { command: "fun", display: "fun", description: "Try it and see" },
     { command: "play", display: "play", description: "Play soundtrack (mp3)" },
     { command: "stop", display: "stop", description: "Stop soundtrack" },
-    { command: "myip", display: "myip", description: "Return your IPv4 🐱‍💻" },
+    { command: "myip", display: "myip", description: "Return your IPv4" },
     { command: "b64", display: "b64 [string]", description: "Encode to Base64 format" },
     { command: "db64", display: "db64 [base64]", description: "Decode from Base64 format" },
-    { command: "lyrics", display: "lyrics", description: "Show synced lyrics with audio 🎵" },
+    { command: "lyrics", display: "lyrics", description: "Show synced lyrics with audio" },
     { command: "lyrics-stop", display: "lyrics-stop", description: "Stop lyrics display" },
     { command: "lyrics-load", display: "lyrics-load [json]", description: "Load custom lyrics" },
     { command: "start", display: "start", description: "Start/restart terminal autoplay demo" },
@@ -181,7 +181,7 @@ export function initTerminal({ target = '#terminal-container', username = 'reina
 
   function helpCommand(): string {
     const [major, minor, patch] = '1.0.3'.split('.');
-    const title = `<div class="help-header">📋 Available Commands - Web bash v<span class="text-ctp-green">${major}</span>.<span class="text-ctp-blue">${minor}</span>.<span class="text-ctp-red">${patch}</span></div>`;
+    const title = `<div class="help-header">Available Commands - Web bash v<span class="text-ctp-green">${major}</span>.<span class="text-ctp-blue">${minor}</span>.<span class="text-ctp-red">${patch}</span></div>`;
     const subtitle = `<div class="help-subtitle">Type any command below and press Enter. Use <span class="text-ctp-blue">Tab</span> or <span class="text-ctp-blue">→</span> to autocomplete.</div>`;
     const rows = commands.map((cmd) => {
       const icon = ICONS[cmd.command] || '·';
@@ -248,7 +248,7 @@ export function initTerminal({ target = '#terminal-container', username = 'reina
           : `https://github.com/${GITHUB_HTML_USER}`;
         const stars = Number(r.stargazers_count) || 0;
         const forks = Number(r.forks_count) || 0;
-        return `• <a class="text-ctp-blue underline" href="${safeUrl}" target="_blank" rel="noreferrer">${safeName}</a> — ⭐ ${stars}  ⎇ ${forks}`;
+        return `• <a class="text-ctp-blue underline" href="${safeUrl}" target="_blank" rel="noreferrer">${safeName}</a> — Stars: ${stars}  Forks: ${forks}`;
       });
       return [
         'Major Projects:',
@@ -489,7 +489,7 @@ export function initTerminal({ target = '#terminal-container', username = 'reina
           const isCorrect = Number(num) === result;
           addOutput({ 
             type: "output", 
-            text: `${isCorrect ? 'You predicted the correct number 🎉' : 'You predicted the wrong number ;-;'}`
+            text: `${isCorrect ? 'You predicted the correct number' : 'You predicted the wrong number'}`
           });
           addOutput({ 
             type: "output", 
@@ -706,7 +706,7 @@ export function initTerminal({ target = '#terminal-container', username = 'reina
     setTimeout(() => {
       document.head.removeChild(style);
       pauseRef.current = false;
-      addOutput({ type: "output", text: "😃" });
+      addOutput({ type: "output", text: "Done!" });
     }, 4900);
   }
   
