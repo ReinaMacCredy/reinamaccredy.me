@@ -317,7 +317,7 @@ export function setupSectionsNavigationReal({
       case 'S':
       case 'MARK':
       case 'SPAN': {
-        while ((t = t?.parentElement || null)) if (t && t.tagName === 'A') break;
+        while ((t = t?.parentElement || null)) if (t.tagName === 'A') break;
         if (!t) return;
         break;
       }
