@@ -1,12 +1,10 @@
 /**
  * Main Terminal orchestrator class
+ * Refactored to use dependency injection pattern
  */
 
 import type { TerminalConfig, TerminalOutput, TerminalInternalState } from '../types/terminal';
-import { GitHubService } from './githubService';
-import { AudioManager } from './audioManager';
-import { LyricsManager } from './lyricsManager';
-import { CommandManager } from './commandManager';
+import type { TerminalDependencies } from './terminalDependencies';
 import { escapeHtml } from './terminalUtils';
 
 export class Terminal {
@@ -17,18 +15,14 @@ export class Terminal {
 
   private state: TerminalInternalState;
   private username: string;
-  private audioSrc: string;
 
-  private githubService: GitHubService;
-  private audioManager: AudioManager;
-  private lyricsManager: LyricsManager;
-  private commandManager: CommandManager;
+  private dependencies: TerminalDependencies;
 
   private refs: { suggestEl?: HTMLElement; input?: HTMLInputElement } = {};
 
-  constructor(config: TerminalConfig = {}) {
+  constructor(config: TerminalConfig = {}, dependencies: TerminalDependencies) {
     this.username = config.username || 'reina';
-    this.audioSrc = config.audioSrc || '/assets/media/hope.mp3';
+    this.dependencies = dependencies;
 
     this.state = {
       commandHistory: [],
@@ -39,36 +33,6 @@ export class Terminal {
       pauseRef: { current: false },
       cache: new Map()
     };
-
-    // Initialize services
-    this.githubService = new GitHubService('reinamaccredy', 'ReinaMacCredy');
-
-    this.lyricsManager = new LyricsManager({
-      getCurrentTime: () => this.audioManager.getCurrentTime(),
-      isPlaying: () => this.audioManager.isPlaying()
-    });
-
-    this.audioManager = new AudioManager(
-      this.audioSrc,
-      (item) => this.addTerminalOutput(item),
-      () => {
-        // Auto-start lyrics when audio begins playing
-        const lyricsState = this.lyricsManager.getState();
-        if (lyricsState.lyrics.length > 0 && !this.lyricsManager.isDisplaying()) {
-          this.lyricsManager.startSync();
-        }
-      }
-    );
-
-    this.commandManager = new CommandManager(
-      this.githubService,
-      this.audioManager,
-      this.lyricsManager,
-      (item) => this.addTerminalOutput(item)
-    );
-
-    // Load lyrics initially
-    this.lyricsManager.loadLyrics();
   }
 
   init(target: string = '#terminal-container'): void {
@@ -134,20 +98,20 @@ export class Terminal {
 
   private setupVisibilityHandling(): void {
     document.addEventListener('visibilitychange', () => {
-      const audio = this.audioManager.getState().audio;
+      const audio = this.dependencies.audioManager.getState().audio;
       if (!audio) return;
 
       if (document.visibilityState === 'hidden' && !audio.paused) {
         audio.pause();
-      } else if (document.visibilityState === 'visible' && this.audioManager.isPlaying()) {
+      } else if (document.visibilityState === 'visible' && this.dependencies.audioManager.isPlaying()) {
         audio.play().catch(() => {});
       }
     });
 
     const startAudioOnClick = (): void => {
-      const state = this.audioManager.getState();
+      const state = this.dependencies.audioManager.getState();
       if (!state.hasStarted && state.initialAutoplayEnabled && !state.hasCompletedInitialPlay) {
-        this.audioManager.start();
+        this.dependencies.audioManager.start();
         document.removeEventListener('click', startAudioOnClick);
         document.removeEventListener('keydown', startAudioOnClick);
       }
@@ -172,7 +136,7 @@ export class Terminal {
 
     const input = [searchFirstWord, ...(firstSpace === -1 ? [] : trimmedLeading.slice(firstSpace + 1).split(" "))].join(" ");
 
-    const found = this.commandManager.findCommandStartingWith(searchFirstWord);
+    const found = this.dependencies.commandManager.findCommandStartingWith(searchFirstWord);
     const suggestedCommand = found || null;
 
     if (this.suggestEl) {
@@ -225,7 +189,7 @@ export class Terminal {
     } else if (event.key === 'ArrowRight') {
       const inputEl = target;
       const atEnd = inputEl.selectionStart === inputEl.value.length && inputEl.selectionEnd === inputEl.value.length;
-      const suggestedCommand = this.commandManager.findCommandStartingWith(target.value.toLowerCase());
+      const suggestedCommand = this.dependencies.commandManager.findCommandStartingWith(target.value.toLowerCase());
 
       if (atEnd && suggestedCommand) {
         event.preventDefault();
@@ -234,7 +198,7 @@ export class Terminal {
       }
     } else if (event.key === 'Tab') {
       event.preventDefault();
-      const suggestedCommand = this.commandManager.findCommandStartingWith(target.value.toLowerCase());
+      const suggestedCommand = this.dependencies.commandManager.findCommandStartingWith(target.value.toLowerCase());
       if (suggestedCommand) {
         target.value = suggestedCommand.command;
         if (this.suggestEl) this.suggestEl.textContent = '';
@@ -258,7 +222,7 @@ export class Terminal {
     if (cmd === 'clear') {
     this.clearOutput();
     } else {
-    await this.commandManager.executeCommand(command);
+    await this.dependencies.commandManager.executeCommand(command);
     }
 
     this.addTerminalOutput({ type: "output", text: "" });

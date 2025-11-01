@@ -156,4 +156,11 @@ export class CommandManager {
   findCommandStartingWith(prefix: string): TerminalCommandDefinition | undefined {
     return this.commands.find(cmd => cmd.command.startsWith(prefix));
   }
+
+  /**
+   * Update the output callback (for dependency injection)
+   */
+  setOnOutput(callback: (item: TerminalOutput) => void): void {
+    this.onOutput = callback;
+  }
 }

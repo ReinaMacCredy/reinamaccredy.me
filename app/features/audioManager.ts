@@ -103,4 +103,8 @@ export class AudioManager {
   isPlaying(): boolean {
     return this.state.isPlaying;
   }
+
+  setOnPlayStart(callback: () => void): void {
+    this.onPlayStart = callback;
+  }
 }
