@@ -7,7 +7,7 @@ export const detectClient = (): ClientInfo => {
     os: 'other',
     osVersion: 0,
     mobile: false,
-    canUse: (): boolean => false, // Temporary, will be assigned below
+    canUse: (): boolean => false, // Initial placeholder, overwritten during initialization
     flags: { lsdUnits: false },
   };
 
