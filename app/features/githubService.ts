@@ -1,7 +1,3 @@
-/**
- * GitHub API service for fetching user and repository data
- */
-
 import type { GitHubUser, GitHubRepo } from '../types/terminal';
 
 export class GitHubService {

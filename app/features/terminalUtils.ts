@@ -1,7 +1,3 @@
-/**
- * Terminal utility functions
- */
-
 export function toBase64Utf8(s: string): string {
   const bytes = new TextEncoder().encode(s);
   let bin = '';

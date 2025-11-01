@@ -1,7 +1,3 @@
-/**
- * Utility command handlers
- */
-
 import type { CommandHandler } from './commandRegistry';
 import { toBase64Utf8, fromBase64Utf8 } from '../terminalUtils';
 import { logger } from '../../lib/utils/logger';

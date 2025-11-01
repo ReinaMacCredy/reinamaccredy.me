@@ -1,7 +1,3 @@
-/**
- * Command registry pattern for terminal commands
- */
-
 import type { TerminalCommandDefinition, TerminalOutput } from '../../types/terminal';
 import type { GitHubService } from '../githubService';
 import type { AudioManager } from '../audioManager';

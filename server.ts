@@ -77,13 +77,6 @@ function printServerBox(): void {
   const maxLength = Math.max(...lines.map(l => l.length));
   const border = '─'.repeat(maxLength + 4);
 
-  console.log(`${COLORS.cyan}\n   ┌${border}┐${COLORS.reset}`);
-  lines.forEach(line => {
-    const padding = ' '.repeat(maxLength - line.length);
-    console.log(`${COLORS.cyan}   │${COLORS.reset}  ${line}${padding}  ${COLORS.cyan}│${COLORS.reset}`);
-  });
-  console.log(`${COLORS.cyan}   └${border}┘${COLORS.reset}\n`);
-
   try {
     if (process.platform === 'darwin') {
       Bun.spawn(['pbcopy'], {
@@ -93,7 +86,6 @@ function printServerBox(): void {
       Bun.spawn(['pbcopy'], { stdin: 'pipe' }).stdin.end(localUrl);
     }
   } catch (e) {
-    // Ignore clipboard errors
   }
 }
 
@@ -137,18 +129,10 @@ const server = Bun.serve({
       const exists = await file.exists();
 
       if (!exists) {
-        const duration = Date.now() - start;
-        console.log(`${COLORS.purple} HTTP ${COLORS.reset} ${formatTimestamp()} ${COLORS.gray}${ip}${COLORS.reset} ${COLORS.red}${method}${COLORS.reset} ${pathname}`);
-        console.log(`${COLORS.purple} HTTP ${COLORS.reset} ${formatTimestamp()} ${COLORS.gray}${ip}${COLORS.reset} ${COLORS.red}Returned 404${COLORS.reset} in ${duration} ms`);
         return new Response('Not Found', { status: 404 });
       }
 
-      console.log(`${COLORS.purple} HTTP ${COLORS.reset} ${formatTimestamp()} ${COLORS.gray}${ip}${COLORS.reset} ${method} ${pathname}`);
-
       const content = await file.arrayBuffer();
-      const duration = Date.now() - start;
-
-      console.log(`${COLORS.purple} HTTP ${COLORS.reset} ${formatTimestamp()} ${COLORS.gray}${ip}${COLORS.reset} ${COLORS.green}Returned 200${COLORS.reset} in ${duration} ms`);
 
       return new Response(content, {
         status: 200,
@@ -158,10 +142,6 @@ const server = Bun.serve({
         }
       });
     } catch (error) {
-      const duration = Date.now() - start;
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      console.log(`${COLORS.purple} HTTP ${COLORS.reset} ${formatTimestamp()} ${COLORS.gray}${ip}${COLORS.reset} ${COLORS.red}${method}${COLORS.reset} ${pathname}`);
-      console.log(`${COLORS.purple} HTTP ${COLORS.reset} ${formatTimestamp()} ${COLORS.gray}${ip}${COLORS.reset} ${COLORS.red}Error${COLORS.reset} ${errorMessage}`);
       return new Response('Internal Server Error', { status: 500 });
     }
   }

@@ -1,6 +1,3 @@
-// LRC to JavaScript Converter Tool
-// Usage: bun convert-lrc.ts
-
 interface LyricLine {
   text: string;
   startTime: number;
@@ -12,7 +9,6 @@ function convertLRCToJS(lrcText: string): LyricLine[] {
   const lyrics: LyricLine[] = [];
   
   lines.forEach((line, index) => {
-    // Match LRC format: [mm:ss.xx]text
     const match = line.match(/^\[(\d{2}):(\d{2}\.\d{2})\](.+)$/);
     if (match) {
       const minutes = parseInt(match[1], 10);
@@ -20,10 +16,8 @@ function convertLRCToJS(lrcText: string): LyricLine[] {
       const text = match[3].trim();
       const startTime = minutes * 60 + seconds;
       
-      // Calculate endTime from next lyric
-      let endTime = startTime + 4; // Default 4 seconds
+      let endTime = startTime + 4;
       
-      // Look for next timing
       for (let i = index + 1; i < lines.length; i++) {
         const nextMatch = lines[i].match(/^\[(\d{2}):(\d{2}\.\d{2})\]/);
         if (nextMatch) {
@@ -45,14 +39,6 @@ function convertLRCToJS(lrcText: string): LyricLine[] {
   return lyrics;
 }
 
-// Instructions:
-console.log('Instructions for use:');
-console.log('1. Open this file in your editor');
-console.log('2. Replace the placeholder below with your LRC data');
-console.log('3. Run: bun convert-lrc.ts');
-console.log('4. Copy the output to terminal_core.ts\n');
-
-// REPLACE THIS WITH YOUR LRC DATA:
 const lrcData = `[00:00.00]Hope Is The Thing With Feathers
 [00:07.00]Chevy/HOYO - MIX/Robin
 [00:14.09]We rise together as our destiny unfolds
@@ -100,18 +86,6 @@ const lrcData = `[00:00.00]Hope Is The Thing With Feathers
 [03:37.13]In the face of god, we rose, as one
 `;
 
-// Convert and output
 const convertedLyrics = convertLRCToJS(lrcData);
-
-console.log('const sampleLyrics = [');
-convertedLyrics.forEach((lyric, index) => {
-  const comma = index === convertedLyrics.length - 1 ? '' : ',';
-  const escapedText = lyric.text.replace(/"/g, '\\"');
-  console.log(`  { text: "${escapedText}", startTime: ${lyric.startTime}, endTime: ${lyric.endTime} }${comma}`);
-});
-console.log('];');
-
-console.log(`\n// Total: ${convertedLyrics.length} lines`);
-console.log(`// Duration: ${Math.max(...convertedLyrics.map(l => l.endTime))} seconds`);
 
 

@@ -1,8 +1,3 @@
-/**
- * Command manager for handling terminal commands
- * Refactored to use command registry pattern for better maintainability
- */
-
 import type { TerminalCommandDefinition, TerminalOutput } from '../types/terminal';
 import { GitHubService } from './githubService';
 import { AudioManager } from './audioManager';
@@ -96,12 +91,10 @@ export class CommandManager {
   }
 
   private async executeCommandByName(cmd: string, params: string[]): Promise<void> {
-    // Special case: clear is handled by terminal orchestrator
     if (cmd === 'clear') {
       return;
     }
 
-    // Get command handler from registry
     const handler = commandRegistry[cmd];
 
     if (handler) {
@@ -123,7 +116,6 @@ export class CommandManager {
         });
       }
     } else {
-      // Fallback: try to find command in commands list with body function
       const found = this.commands.find(c => c.command === cmd);
       if (found && found.body) {
         try {
@@ -157,9 +149,6 @@ export class CommandManager {
     return this.commands.find(cmd => cmd.command.startsWith(prefix));
   }
 
-  /**
-   * Update the output callback (for dependency injection)
-   */
   setOnOutput(callback: (item: TerminalOutput) => void): void {
     this.onOutput = callback;
   }

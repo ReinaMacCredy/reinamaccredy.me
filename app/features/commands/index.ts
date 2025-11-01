@@ -1,7 +1,3 @@
-/**
- * Command registry - aggregates all command handlers
- */
-
 import type { CommandRegistry } from './commandRegistry';
 import { playCommand, stopCommand, lyricsCommand, lyricsStopCommand, lyricsLoadCommand, startCommand } from './audioCommands';
 import { helpCommand, infoCommand, whoamiCommand, repoCommand, socialCommand, emailCommand, bannerCommand, projectsCommand } from './infoCommands';

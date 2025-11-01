@@ -1,7 +1,3 @@
-/**
- * Audio manager for handling terminal soundtrack playback
- */
-
 import type { AudioState, TerminalOutput } from '../types/terminal';
 import { logger } from '../lib/utils/logger';
 

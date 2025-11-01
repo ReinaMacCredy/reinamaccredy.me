@@ -1,7 +1,3 @@
-/**
- * Audio-related command handlers
- */
-
 import type { CommandHandler } from './commandRegistry';
 import { logger } from '../../lib/utils/logger';
 

@@ -1,8 +1,3 @@
-/**
- * Web Vitals tracking for performance monitoring
- */
-
-// Type definitions for Web Vitals APIs
 interface LayoutShift extends PerformanceEntry {
   value: number
   hadRecentInput: boolean
@@ -41,7 +36,6 @@ function reportMetric(metric: WebVitalsMetric): void {
     try {
       handler(metric)
     } catch (error) {
-      // Ignore handler errors
     }
   })
 }
@@ -52,7 +46,6 @@ function getRating(value: number, thresholds: { good: number; poor: number }): '
   return 'poor'
 }
 
-// LCP - Largest Contentful Paint
 export function initLCP(): void {
   if (typeof window === 'undefined' || !('PerformanceObserver' in window)) return
 
@@ -75,11 +68,9 @@ export function initLCP(): void {
 
     observer.observe({ entryTypes: ['largest-contentful-paint'] })
   } catch (error) {
-    // PerformanceObserver not supported
   }
 }
 
-// FID - First Input Delay
 export function initFID(): void {
   if (typeof window === 'undefined' || !('PerformanceObserver' in window)) return
 
@@ -103,11 +94,9 @@ export function initFID(): void {
 
     observer.observe({ entryTypes: ['first-input'] })
   } catch (error) {
-    // PerformanceObserver not supported
   }
 }
 
-// CLS - Cumulative Layout Shift
 export function initCLS(): void {
   if (typeof window === 'undefined' || !('PerformanceObserver' in window)) return
 
@@ -148,11 +137,9 @@ export function initCLS(): void {
 
     observer.observe({ entryTypes: ['layout-shift'] })
   } catch (error) {
-    // PerformanceObserver not supported
   }
 }
 
-// FCP - First Contentful Paint
 export function initFCP(): void {
   if (typeof window === 'undefined' || !('PerformanceObserver' in window)) return
 
@@ -173,11 +160,9 @@ export function initFCP(): void {
 
     observer.observe({ entryTypes: ['paint'] })
   } catch (error) {
-    // PerformanceObserver not supported
   }
 }
 
-// TTFB - Time to First Byte
 export function initTTFB(): void {
   if (typeof window === 'undefined' || !('performance' in window)) return
 
@@ -194,7 +179,6 @@ export function initTTFB(): void {
       })
     }
   } catch (error) {
-    // Navigation timing not available
   }
 }
 
@@ -206,12 +190,5 @@ export function initWebVitals(): void {
   initCLS()
   initFCP()
   initTTFB()
-
-  // Log metrics in development
-  if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
-    onWebVital((metric) => {
-      console.log(`[Web Vital] ${metric.name}: ${metric.value}ms (${metric.rating})`)
-    })
-  }
 }
 

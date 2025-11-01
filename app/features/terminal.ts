@@ -1,8 +1,3 @@
-/**
- * Main Terminal orchestrator class
- * Refactored to use dependency injection pattern
- */
-
 import type { TerminalConfig, TerminalOutput, TerminalInternalState } from '../types/terminal';
 import type { TerminalDependencies } from './terminalDependencies';
 import { escapeHtml } from './terminalUtils';
@@ -60,7 +55,6 @@ export class Terminal {
       </div>
       <div class="terminal-body bg-ctp-base p-5 rounded-b-3xl min-h-[60vh] lg:min-h-[70vh] max-h-[60vh] lg:max-h-[70vh] overflow-auto prompt">
         <div class="terminal-output text-ctp-subtext0 text-sm"></div>
-        <!-- PRE-ALLOCATED LYRICS ZONE - Always present but hidden by default -->
         <div id="lyrics-zone" class="lyrics-zone-fixed">
           <div id="lyrics-container" class="lyrics-container"></div>
         </div>
@@ -295,7 +289,6 @@ export class Terminal {
     }
   }
 
-  // Public API methods
   execute = (command: string) => this.executeCommand(command);
   addOutput = (item: TerminalOutput) => this.addTerminalOutput(item);
   clear = () => this.clearOutput();

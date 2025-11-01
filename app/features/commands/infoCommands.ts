@@ -1,7 +1,3 @@
-/**
- * Information-related command handlers
- */
-
 import type { CommandHandler } from './commandRegistry';
 import { escapeHtml } from '../terminalUtils';
 import { logger } from '../../lib/utils/logger';

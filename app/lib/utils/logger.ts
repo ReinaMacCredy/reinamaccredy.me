@@ -1,7 +1,3 @@
-/**
- * Logger utility with dev/prod modes
- */
-
 const isDevelopment = typeof process !== 'undefined' && process.env.NODE_ENV === 'development';
 
 export const logger = {

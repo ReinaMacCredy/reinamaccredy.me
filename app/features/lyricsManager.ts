@@ -1,7 +1,3 @@
-/**
- * Lyrics manager for handling synchronized lyrics display
- */
-
 import type { LyricLine, LyricsState } from '../types/terminal';
 
 type GsapTimeline = ReturnType<typeof import('gsap').gsap.timeline>;

@@ -1,14 +1,5 @@
-/**
- * Utilities for React hooks to reduce code duplication
- */
-
 import { logger } from './logger';
 
-/**
- * Creates a safe hook wrapper that handles errors gracefully
- * @param hookName - Name of the hook for error logging
- * @param initFn - Initialization function to wrap
- */
 export function withErrorHandling(
   hookName: string,
   initFn: () => void | (() => void)
@@ -20,10 +11,6 @@ export function withErrorHandling(
   }
 }
 
-/**
- * Common scroll position calculation utilities
- */
-
 export interface ScrollPosition {
   top: number;
   bottom: number;
@@ -31,9 +18,6 @@ export interface ScrollPosition {
   scrollPad: number;
 }
 
-/**
- * Calculate scroll position (iOS-aware)
- */
 export function getScrollPosition(isIos: boolean = false): ScrollPosition {
   const height = document.documentElement.clientHeight;
   let top: number;
@@ -55,9 +39,6 @@ export function getScrollPosition(isIos: boolean = false): ScrollPosition {
   };
 }
 
-/**
- * Check if element is in viewport
- */
 export function isInViewport(
   element: HTMLElement,
   viewportTop: number,

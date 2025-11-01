@@ -38,7 +38,6 @@ export function createScrollEvents({ isIos = false }: ScrollEventsOptions = {}):
         return;
       }
       
-      // Cache bounding rect per frame
       let bcr: DOMRect;
       if (frameCache.has(item.triggerElement) && cacheFrameId === currentFrameId) {
         bcr = frameCache.get(item.triggerElement)!;
@@ -114,7 +113,7 @@ export function createScrollEvents({ isIos = false }: ScrollEventsOptions = {}):
 
   function rafHandler(): void {
     currentFrameId++;
-    frameCache.clear(); // Invalidate cache each frame
+    frameCache.clear();
     handler();
     rafId = null;
   }
