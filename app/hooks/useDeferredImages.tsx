@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { initDeferredImages } from '../features/deferredImages'
 import type { ScrollEvents } from '../types/core'
+import { logger } from '../lib/utils/logger'
 
 export function useDeferredImages(scrollEvents: ScrollEvents | null): void {
   useEffect(() => {
@@ -11,7 +12,7 @@ export function useDeferredImages(scrollEvents: ScrollEvents | null): void {
     try {
       initDeferredImages({ scrollEvents })
     } catch (error) {
-      console.error('[bootstrap] initDeferredImages failed:', error)
+      logger.error('[bootstrap] initDeferredImages failed:', error)
     }
   }, [scrollEvents])
 }

@@ -47,6 +47,7 @@ export interface ScrollEvents {
   add: (options: ScrollEventOptions) => void;
   handler: () => void;
   init: () => void;
+  cleanup?: () => void;
 }
 
 export interface SectionConfig {

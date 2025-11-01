@@ -4,7 +4,7 @@ interface EffectDefinition {
   type?: 'transition' | 'animate' | 'manual';
   target?: string;
   transition?: (speed: number, delay: number) => string;
-  play?: (intensity: number, isChildren?: boolean) => void;
+  play?: ((speed: number, delay: number, intensity: number) => void) | ((intensity: number, isChildren?: boolean) => void);
   rewind?: (intensity: number, isChildren?: boolean) => void;
   keyframes?: (intensity: number) => Keyframe[];
   options?: (speed: number, delay: number) => KeyframeAnimationOptions;
@@ -50,10 +50,13 @@ export function createOnVisible({ scrollEvents }: { scrollEvents: ScrollEvents }
       wrapper.innerHTML = value;
       if (node.parentNode) {
         node.replaceWith(wrapper);
-        while (wrapper.childNodes.length > 0) {
-          wrapper.parentNode.insertBefore(wrapper.childNodes[0], wrapper);
+        const parentNode = wrapper.parentNode;
+        if (parentNode) {
+          while (wrapper.childNodes.length > 0) {
+            parentNode.insertBefore(wrapper.childNodes[0], wrapper);
+          }
+          parentNode.removeChild(wrapper);
         }
-        wrapper.parentNode.removeChild(wrapper);
       }
     }
   }
@@ -135,7 +138,13 @@ export function createOnVisible({ scrollEvents }: { scrollEvents: ScrollEvents }
             if (def.transition) {
               _this.style.transition = def.transition(speed / 1000, (delay + staggerDelay) / 1000);
             }
-            if (def.play) def.play.call(_this, adjustedIntensity, !!_children);
+            if (def.play) {
+              if (def.play.length === 3) {
+                (def.play as (speed: number, delay: number, intensity: number) => void).call(_this, speed / 1000, (delay + staggerDelay) / 1000, intensity);
+              } else {
+                (def.play as (intensity: number, isChildren?: boolean) => void).call(_this, adjustedIntensity, !!_children);
+              }
+            }
             setTimeout(() => {
               _this.style.removeProperty('backface-visibility');
               _this.style.transition = transitionOrig;
@@ -164,7 +173,13 @@ export function createOnVisible({ scrollEvents }: { scrollEvents: ScrollEvents }
           enter = function (this: HTMLElement, _children?: NodeListOf<Element>, staggerDelay = 0): void {
             const _this = this;
             setTimeout(() => {
-              if (def.play) def.play.call(_this, adjustedIntensity);
+              if (def.play) {
+                if (def.play.length === 3) {
+                  (def.play as (speed: number, delay: number, intensity: number) => void).call(_this, speed / 1000, delay / 1000, intensity);
+                } else {
+                  (def.play as (intensity: number, isChildren?: boolean) => void).call(_this, adjustedIntensity);
+                }
+              }
               if (def.keyframes && def.options) {
                 _this.animate(def.keyframes(intensity), def.options(speed, delay));
               }
@@ -177,7 +192,7 @@ export function createOnVisible({ scrollEvents }: { scrollEvents: ScrollEvents }
               const a = _this.animate(def.keyframes(intensity), def.options(speed, delay));
               a.reverse();
               a.addEventListener('finish', () => {
-                if (def.rewind) def.rewind.call(_this);
+                if (def.rewind) def.rewind.call(_this, intensity, false);
               });
             }
           };
@@ -187,7 +202,13 @@ export function createOnVisible({ scrollEvents }: { scrollEvents: ScrollEvents }
         case 'manual': {
           enter = function (this: HTMLElement, _children?: NodeListOf<Element>, staggerDelay = 0): void {
             const _this = this;
-            if (def.play) def.play.call(_this, speed / 1000, (delay + staggerDelay) / 1000, intensity);
+            if (def.play) {
+              if (def.play.length === 3) {
+                (def.play as (speed: number, delay: number, intensity: number) => void).call(_this, speed / 1000, (delay + staggerDelay) / 1000, intensity);
+              } else {
+                (def.play as (intensity: number, isChildren?: boolean) => void).call(_this, intensity, !!_children);
+              }
+            }
           };
 
           leave = function (this: HTMLElement, _children?: NodeListOf<Element>): void {

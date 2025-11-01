@@ -3,6 +3,7 @@
  */
 
 import type { AudioState, TerminalOutput } from '../types/terminal';
+import { logger } from '../lib/utils/logger';
 
 export class AudioManager {
   private state: AudioState;
@@ -36,7 +37,7 @@ export class AudioManager {
       this.state.audio = a;
 
       a.addEventListener('error', (e) => {
-        console.warn('Audio failed to load:', e);
+        logger.warn('Audio failed to load:', e);
         this.onOutput?.({
           type: "error",
           text: "Audio failed to load. Check the audio file path."

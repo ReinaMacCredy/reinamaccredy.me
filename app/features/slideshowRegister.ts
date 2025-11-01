@@ -2,10 +2,39 @@ import { initSlideshows } from './slideshow';
 import { detectClient } from '../lib/utils/client';
 import type { ScrollEvents } from '../types/core';
 
+interface SlideshowImage {
+  src: string;
+  position: string;
+  motion?: string;
+  speed?: number;
+  caption?: string;
+  linkUrl?: { href?: string; target?: string; onclick?: (event: Event) => void } | string;
+}
+
+interface SlideshowTransition {
+  style: 'crossfade' | 'fade' | 'instant';
+  speed: number;
+  delay: number | false;
+  resume: number | false;
+}
+
+interface SlideshowSettings {
+  id?: string;
+  images: SlideshowImage[];
+  target: string;
+  wrapper?: string;
+  wait?: number;
+  defer?: boolean;
+  navigation?: boolean;
+  order?: 'default' | 'reverse' | 'random';
+  preserveImageAspectRatio?: boolean;
+  transition?: SlideshowTransition;
+}
+
 export function registerSlideshows({ scrollEvents }: { scrollEvents: ScrollEvents }): void {
   const { SlideshowBackground } = initSlideshows({ scrollEvents });
   const CreateSlideshowBackground = class extends SlideshowBackground {
-    constructor(id: string, settings: any) {
+    constructor(id: string, settings: SlideshowSettings) {
       super(id, settings, scrollEvents);
     }
   };

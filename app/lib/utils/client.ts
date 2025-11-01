@@ -7,7 +7,7 @@ export const detectClient = (): ClientInfo => {
     os: 'other',
     osVersion: 0,
     mobile: false,
-    canUse: null as any, // Will be assigned below
+    canUse: (): boolean => false, // Temporary, will be assigned below
     flags: { lsdUnits: false },
   };
 
@@ -35,8 +35,9 @@ export const detectClient = (): ClientInfo => {
       if (match) {
         o.browser = browserPatterns[i][0];
         const versionStr = match[1] || '';
-      o.browserVersion = parseFloat(browserPatterns[i][2] ? browserPatterns[i][2](versionStr) : versionStr);
-      break;
+        const transform = browserPatterns[i][2];
+        o.browserVersion = parseFloat(transform ? transform(versionStr) : versionStr);
+        break;
     }
   }
 
@@ -60,7 +61,8 @@ export const detectClient = (): ClientInfo => {
     if (match) {
       o.os = osPatterns[i][0];
       const versionStr = match[1] || '';
-      o.osVersion = parseFloat(osPatterns[i][2] ? osPatterns[i][2](versionStr) : versionStr);
+      const transform = osPatterns[i][2];
+      o.osVersion = parseFloat(transform ? transform(versionStr) : versionStr);
       break;
     }
   }
