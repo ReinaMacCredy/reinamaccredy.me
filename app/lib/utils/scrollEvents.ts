@@ -1,4 +1,5 @@
 import type { ScrollEvents, ScrollEventsOptions, ScrollEventOptions } from '../../types/core';
+import { getScrollPosition } from './hookUtils';
 
 export function createScrollEvents({ isIos = false }: ScrollEventsOptions = {}): ScrollEvents {
   const items: ScrollEvents['items'] = [];
@@ -22,22 +23,8 @@ export function createScrollEvents({ isIos = false }: ScrollEventsOptions = {}):
   }
 
   function handler(): void {
-    let height: number;
-    let top: number;
-    let bottom: number;
-    let scrollPad: number;
-
-    if (isIos) {
-      height = document.documentElement.clientHeight;
-      top = document.body.scrollTop + window.scrollY;
-      bottom = top + height;
-      scrollPad = 125;
-    } else {
-      height = document.documentElement.clientHeight;
-      top = document.documentElement.scrollTop;
-      bottom = top + height;
-      scrollPad = 0;
-    }
+    const scrollPos = getScrollPosition(isIos);
+    const { top, bottom, height, scrollPad } = scrollPos;
 
     items.forEach((item) => {
       if (!item.enter && !item.leave) return;

@@ -3,17 +3,14 @@
 import { useEffect } from 'react'
 import { registerSlideshows } from '../features/slideshowRegister'
 import type { ScrollEvents } from '../types/core'
-import { logger } from '../lib/utils/logger'
+import { withErrorHandling } from '../lib/utils/hookUtils'
 
 export function useSlideshows(scrollEvents: ScrollEvents | null): void {
   useEffect(() => {
     if (!scrollEvents) return
-    
-    try {
+    withErrorHandling('registerSlideshows', () => {
       registerSlideshows({ scrollEvents })
-    } catch (error) {
-      logger.error('[bootstrap] registerSlideshows failed:', error)
-    }
+    })
   }, [scrollEvents])
 }
 
