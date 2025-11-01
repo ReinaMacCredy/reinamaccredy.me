@@ -97,7 +97,7 @@ export class LyricsManager {
     this.state.syncInterval = setInterval(() => this.updateDisplay(), 100) as unknown as NodeJS.Timeout;
   }
 
-  stopSync(): void {
+  async stopSync(): Promise<void> {
     this.state.isDisplaying = false;
     this.state.currentIndex = -1;
     this.state.activeIndex = -1;
@@ -111,12 +111,11 @@ export class LyricsManager {
     if (lyricsContainer) {
       const currentLyric = lyricsContainer.querySelector<HTMLElement>('.lyric-line');
       if (currentLyric) {
-        createExitAnimation(currentLyric).then((exitTimeline) => {
-          this.state.gsapExitTimeline = exitTimeline as import('../types/terminal').Timeline;
-          exitTimeline.eventCallback('onComplete', () => {
-            lyricsContainer.innerHTML = '';
-            this.state.gsapExitTimeline = null;
-          });
+        const exitTimeline = await createExitAnimation(currentLyric);
+        this.state.gsapExitTimeline = exitTimeline as import('../types/terminal').Timeline;
+        exitTimeline.eventCallback('onComplete', () => {
+          lyricsContainer.innerHTML = '';
+          this.state.gsapExitTimeline = null;
         });
       } else {
         lyricsContainer.innerHTML = '';
@@ -156,13 +155,13 @@ export class LyricsManager {
 
         this.state.displayedLyrics.add(i);
         this.state.currentIndex = i;
-        this.displayCurrentLyric(lyric, currentTime);
+        void this.displayCurrentLyric(lyric, currentTime);
         break;
       }
     }
   }
 
-  private displayCurrentLyric(lyric: LyricLine, currentTime: number): void {
+  private async displayCurrentLyric(lyric: LyricLine, currentTime: number): Promise<void> {
     const lyricId = `lyric-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
     const lyricText = escapeHtml(lyric.text);
 
@@ -180,14 +179,13 @@ export class LyricsManager {
 
     const currentLyric = lyricsContainer.querySelector<HTMLElement>('.lyric-line');
     if (currentLyric) {
-      createExitAnimation(currentLyric).then((exitTimeline) => {
-        this.state.gsapExitTimeline = exitTimeline as import('../types/terminal').Timeline;
-        exitTimeline.eventCallback('onComplete', () => {
-          if (currentLyric.parentNode) {
-            currentLyric.remove();
-          }
-          this.state.gsapExitTimeline = null;
-        });
+      const exitTimeline = await createExitAnimation(currentLyric);
+      this.state.gsapExitTimeline = exitTimeline as import('../types/terminal').Timeline;
+      exitTimeline.eventCallback('onComplete', () => {
+        if (currentLyric.parentNode) {
+          currentLyric.remove();
+        }
+        this.state.gsapExitTimeline = null;
       });
 
       setTimeout(() => {
@@ -225,35 +223,35 @@ export class LyricsManager {
 
         if (timeUntilDisappear > disappearDuration * 1000) {
           const timeoutId = setTimeout(() => {
-            this.scheduleDisappear(lyricId, lyric);
+            void this.scheduleDisappear(lyricId);
             this.state.disappearTimeouts.delete(lyricId);
           }, timeUntilDisappear);
 
           this.state.disappearTimeouts.set(lyricId, timeoutId);
         } else if (timeUntilDisappear > 0) {
-          this.scheduleDisappear(lyricId, lyric);
+          void this.scheduleDisappear(lyricId);
         }
       });
     });
   }
 
-  private scheduleDisappear(lyricId: string, lyric: LyricLine): void {
+  private async scheduleDisappear(lyricId: string): Promise<void> {
     const element = document.getElementById(lyricId);
     if (!element) return;
 
-    createExitAnimation(element, {
+    const disappearTimeline = await createExitAnimation(element, {
       stagger: 0.02,
       duration: 0.4,
       blur: 8,
       direction: 'forward'
-    }).then((disappearTimeline) => {
-      this.state.gsapExitTimeline = disappearTimeline as import('../types/terminal').Timeline;
-      disappearTimeline.eventCallback('onComplete', () => {
-        if (element.parentNode) {
-          element.remove();
-        }
-        this.state.gsapExitTimeline = null;
-      });
+    });
+
+    this.state.gsapExitTimeline = disappearTimeline as import('../types/terminal').Timeline;
+    disappearTimeline.eventCallback('onComplete', () => {
+      if (element.parentNode) {
+        element.remove();
+      }
+      this.state.gsapExitTimeline = null;
     });
   }
 

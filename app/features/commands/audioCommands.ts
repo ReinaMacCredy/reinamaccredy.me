@@ -26,7 +26,7 @@ export const lyricsCommand: CommandHandler = (_params, { audioManager, lyricsMan
 };
 
 export const lyricsStopCommand: CommandHandler = (_params, { lyricsManager }) => {
-  lyricsManager.stopSync();
+  void lyricsManager.stopSync();
 };
 
 export const lyricsLoadCommand: CommandHandler = (params, { lyricsManager, onOutput }) => {
