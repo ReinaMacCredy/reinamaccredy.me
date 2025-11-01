@@ -1,17 +1,16 @@
-/**
- * Audio manager for handling terminal soundtrack playback
- */
-
 import type { AudioState, TerminalOutput } from '../types/terminal';
+import { logger } from '../lib/utils/logger';
 
 export class AudioManager {
   private state: AudioState;
   private audioSrc: string;
   private onOutput?: (item: TerminalOutput) => void;
+  private onPlayStart?: () => void;
 
-  constructor(audioSrc: string, onOutput?: (item: TerminalOutput) => void) {
+  constructor(audioSrc: string, onOutput?: (item: TerminalOutput) => void, onPlayStart?: () => void) {
     this.audioSrc = audioSrc;
     this.onOutput = onOutput;
+    this.onPlayStart = onPlayStart;
     this.state = {
       audio: null,
       isPlaying: false,
@@ -34,7 +33,7 @@ export class AudioManager {
       this.state.audio = a;
 
       a.addEventListener('error', (e) => {
-        console.warn('Audio failed to load:', e);
+        logger.warn('Audio failed to load:', e);
         this.onOutput?.({
           type: "error",
           text: "Audio failed to load. Check the audio file path."
@@ -45,6 +44,10 @@ export class AudioManager {
         this.state.isPlaying = false;
         this.state.hasCompletedInitialPlay = true;
         this.state.isWaitingForStartCommand = true;
+      });
+
+      a.addEventListener('play', () => {
+        this.onPlayStart?.();
       });
     }
     return this.state.audio;
@@ -95,5 +98,9 @@ export class AudioManager {
 
   isPlaying(): boolean {
     return this.state.isPlaying;
+  }
+
+  setOnPlayStart(callback: () => void): void {
+    this.onPlayStart = callback;
   }
 }

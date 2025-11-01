@@ -35,26 +35,26 @@ interface DragPosition {
 }
 
 class SlideshowBackground {
-  id: string;
-  wait: number;
-  defer: boolean;
-  navigation: boolean;
-  order: 'default' | 'reverse' | 'random';
-  preserveImageAspectRatio: boolean;
-  transition: SlideshowTransition;
-  images: SlideshowImage[];
-  preload: boolean;
-  locked: boolean;
-  $target: HTMLElement;
-  $wrapper: HTMLElement | null;
-  pos: number;
-  lastPos: number;
-  $slides: HTMLElement[];
-  img: HTMLImageElement;
-  $img: HTMLImageElement;
-  preloadTimeout: NodeJS.Timeout | null;
-  resumeTimeout: NodeJS.Timeout | null;
-  transitionInterval: NodeJS.Timeout | null;
+  id!: string;
+  wait!: number;
+  defer!: boolean;
+  navigation!: boolean;
+  order!: 'default' | 'reverse' | 'random';
+  preserveImageAspectRatio!: boolean;
+  transition!: SlideshowTransition;
+  images!: SlideshowImage[];
+  preload!: boolean;
+  locked!: boolean;
+  $target!: HTMLElement;
+  $wrapper!: HTMLElement | null;
+  pos!: number;
+  lastPos!: number;
+  $slides!: HTMLElement[];
+  img!: HTMLImageElement;
+  $img!: HTMLImageElement;
+  preloadTimeout!: NodeJS.Timeout | null;
+  resumeTimeout!: NodeJS.Timeout | null;
+  transitionInterval!: NodeJS.Timeout | null;
 
   constructor(id: string, settings: SlideshowSettings, scrollEvents: ScrollEvents) {
     if (!('images' in settings) || !('target' in settings)) return;

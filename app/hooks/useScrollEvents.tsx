@@ -21,6 +21,12 @@ export function useScrollEvents(): ScrollEvents | null {
     } catch (_) { }
     
     setScrollEvents(events)
+
+    return () => {
+      if (events.cleanup) {
+        events.cleanup()
+      }
+    }
   }, [])
 
   return scrollEvents

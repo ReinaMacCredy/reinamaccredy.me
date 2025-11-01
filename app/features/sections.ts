@@ -53,8 +53,8 @@ function resetSectionChangeElements(section: HTMLElement): void {
 }
 
 export function setupSectionsNavigationReal({
-  header = document.querySelector('#header'),
-  footer = document.querySelector('#footer'),
+  header = document.querySelector('#header') as HTMLElement | null,
+  footer = document.querySelector('#footer') as HTMLElement | null,
   title = document.title,
   sectionsConfig = {},
 }: SectionsNavigationConfig = {}): SectionsNavigation {
@@ -71,7 +71,7 @@ export function setupSectionsNavigationReal({
 
     locked = true;
 
-    if (location.hash === '#main') history.replaceState(null, null, '#');
+    if (location.hash === '#main') history.replaceState(null, '', '#');
 
     const name = section ? section.id.replace(/-section$/, '') : null;
     const hideHeader = name && sectionsConfig[name]?.hideHeader ? true : false;
@@ -226,7 +226,7 @@ export function setupSectionsNavigationReal({
     if (section) {
       let id = section.id.replace(/-section$/, '');
       if (id === 'main') id = '';
-      history.pushState(null, null, '#' + id);
+      history.pushState(null, '', '#' + id);
     }
   }
 
@@ -255,7 +255,7 @@ export function setupSectionsNavigationReal({
     initialScrollPoint = null;
     initialSection = document.getElementById('main-section') as HTMLElement | null;
     initialId = initialSection?.id;
-    history.replaceState(undefined, undefined, '#');
+    history.replaceState(null, '', '#');
   }
 
   if (initialId) {
@@ -295,7 +295,7 @@ export function setupSectionsNavigationReal({
       } else {
         scrollPoint = null;
         section = document.getElementById('main-section') as HTMLElement | null;
-        history.replaceState(undefined, undefined, '#');
+        history.replaceState(null, '', '#');
       }
     }
     if (!section) return false;
@@ -324,7 +324,7 @@ export function setupSectionsNavigationReal({
       default:
         break;
     }
-    if (t.tagName === 'A') {
+    if (t && t.tagName === 'A') {
       const anchor = t as HTMLAnchorElement;
       const href = anchor.getAttribute('href');
       if (href !== null && href.substring(0, 1) === '#') {
@@ -334,14 +334,14 @@ export function setupSectionsNavigationReal({
           event.preventDefault();
           const section = target.parentElement as HTMLElement | null;
           if (section && section.classList.contains('inactive')) {
-            history.pushState(null, null, '#' + section.id.replace(/-section$/, ''));
+            history.pushState(null, '', '#' + section.id.replace(/-section$/, ''));
             activateSection(section, target);
           } else {
             scrollToElement(target, 'smooth', scrollPointSpeed(target));
           }
         } else if (hash === window.location.hash) {
           event.preventDefault();
-          history.replaceState(undefined, undefined, '#');
+          history.replaceState(null, '', '#');
           location.replace(hash);
         }
       }

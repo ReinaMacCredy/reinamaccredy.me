@@ -12,6 +12,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 *.log
+package-lock.json
 
 # Environment files (keep only examples in repo)
 .env
@@ -30,6 +31,7 @@ tmp/
 temp/
 demo/
 docs/
+tsconfig.tsbuildinfo
 
 # Editor/IDE settings
 .vscode/

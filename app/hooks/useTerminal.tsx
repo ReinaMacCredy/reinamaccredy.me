@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import { detectClient } from '../lib/utils/client'
 import { registerTerminalContainer } from '../features/terminalContainer'
 import type { ScrollEvents } from '../types/core'
+import { logger } from '../lib/utils/logger'
 
 export function useTerminal(scrollEvents: ScrollEvents | null): void {
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -16,14 +17,14 @@ export function useTerminal(scrollEvents: ScrollEvents | null): void {
     try {
       registerTerminalContainer({ scrollEvents })
     } catch (error) {
-      console.error('[bootstrap] registerTerminalContainer failed:', error)
+      logger.error('[bootstrap] registerTerminalContainer failed:', error)
       
       if (client.mobile) {
         retryTimeoutRef.current = setTimeout(() => {
           try {
             registerTerminalContainer({ scrollEvents })
           } catch (retryError) {
-            console.error('[bootstrap] terminal retry failed:', retryError)
+            logger.error('[bootstrap] terminal retry failed:', retryError)
           }
         }, 1500)
       }

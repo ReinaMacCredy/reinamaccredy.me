@@ -1,10 +1,9 @@
-/**
- * Lyrics manager for handling synchronized lyrics display
- */
-
 import type { LyricLine, LyricsState } from '../types/terminal';
+
+type GsapTimeline = ReturnType<typeof import('gsap').gsap.timeline>;
 import { createEntranceAnimation, createExitAnimation, killAllAnimations } from './lyricsAnimations';
 import { escapeHtml } from './terminalUtils';
+import { logger } from '../lib/utils/logger';
 
 export class LyricsManager {
   private state: LyricsState;
@@ -40,7 +39,7 @@ export class LyricsManager {
     try {
       const response = await fetch('/data/lyrics.json');
       if (!response.ok) {
-        console.error(`Failed to load lyrics: ${response.status} ${response.statusText}`);
+        logger.error(`Failed to load lyrics: ${response.status} ${response.statusText}`);
         return;
       }
 
@@ -63,13 +62,13 @@ export class LyricsManager {
         if (isValid) {
           this.state.lyrics = lyricsData as LyricLine[];
         } else {
-          console.error('Invalid lyrics format: items must have text, startTime, and endTime');
+          logger.error('Invalid lyrics format: items must have text, startTime, and endTime');
         }
       } else {
-        console.error('Invalid lyrics format: must be an array');
+        logger.error('Invalid lyrics format: must be an array');
       }
     } catch (error) {
-      console.error('Error loading lyrics from JSON:', error);
+      logger.error('Error loading lyrics from JSON:', error);
     }
   }
 
@@ -77,7 +76,7 @@ export class LyricsManager {
     if (Array.isArray(lyricsData)) {
       this.state.lyrics = lyricsData as LyricLine[];
     } else {
-      console.error('Invalid lyrics format: must be an array');
+      logger.error('Invalid lyrics format: must be an array');
     }
   }
 
@@ -94,7 +93,7 @@ export class LyricsManager {
     this.state.syncInterval = setInterval(() => this.updateDisplay(), 100) as unknown as NodeJS.Timeout;
   }
 
-  stopSync(): void {
+  async stopSync(): Promise<void> {
     this.state.isDisplaying = false;
     this.state.currentIndex = -1;
     this.state.activeIndex = -1;
@@ -108,9 +107,8 @@ export class LyricsManager {
     if (lyricsContainer) {
       const currentLyric = lyricsContainer.querySelector<HTMLElement>('.lyric-line');
       if (currentLyric) {
-        const exitTimeline = createExitAnimation(currentLyric);
-        this.state.gsapExitTimeline = exitTimeline;
-
+        const exitTimeline = await createExitAnimation(currentLyric);
+        this.state.gsapExitTimeline = exitTimeline as import('../types/terminal').Timeline;
         exitTimeline.eventCallback('onComplete', () => {
           lyricsContainer.innerHTML = '';
           this.state.gsapExitTimeline = null;
@@ -153,13 +151,13 @@ export class LyricsManager {
 
         this.state.displayedLyrics.add(i);
         this.state.currentIndex = i;
-        this.displayCurrentLyric(lyric, currentTime);
+        void this.displayCurrentLyric(lyric, currentTime);
         break;
       }
     }
   }
 
-  private displayCurrentLyric(lyric: LyricLine, currentTime: number): void {
+  private async displayCurrentLyric(lyric: LyricLine, currentTime: number): Promise<void> {
     const lyricId = `lyric-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
     const lyricText = escapeHtml(lyric.text);
 
@@ -177,9 +175,8 @@ export class LyricsManager {
 
     const currentLyric = lyricsContainer.querySelector<HTMLElement>('.lyric-line');
     if (currentLyric) {
-      const exitTimeline = createExitAnimation(currentLyric);
-      this.state.gsapExitTimeline = exitTimeline;
-
+      const exitTimeline = await createExitAnimation(currentLyric);
+      this.state.gsapExitTimeline = exitTimeline as import('../types/terminal').Timeline;
       exitTimeline.eventCallback('onComplete', () => {
         if (currentLyric.parentNode) {
           currentLyric.remove();
@@ -208,9 +205,9 @@ export class LyricsManager {
     this.state.activeLyricElements.set(lyric.startTime, lyricId);
     this.state.activeIndex = this.state.currentIndex;
 
-    requestAnimationFrame(() => {
-      const entranceTimeline = createEntranceAnimation(newElement, lyric.text);
-      this.state.gsapTimeline = entranceTimeline;
+    requestAnimationFrame(async () => {
+      const entranceTimeline = await createEntranceAnimation(newElement, lyric.text);
+      this.state.gsapTimeline = entranceTimeline as import('../types/terminal').Timeline;
 
       entranceTimeline.eventCallback('onComplete', () => {
         const updatedCurrentTime = this.audioManager.getCurrentTime();
@@ -222,31 +219,30 @@ export class LyricsManager {
 
         if (timeUntilDisappear > disappearDuration * 1000) {
           const timeoutId = setTimeout(() => {
-            this.scheduleDisappear(lyricId, lyric);
+            void this.scheduleDisappear(lyricId);
             this.state.disappearTimeouts.delete(lyricId);
           }, timeUntilDisappear);
 
           this.state.disappearTimeouts.set(lyricId, timeoutId);
         } else if (timeUntilDisappear > 0) {
-          this.scheduleDisappear(lyricId, lyric);
+          void this.scheduleDisappear(lyricId);
         }
       });
     });
   }
 
-  private scheduleDisappear(lyricId: string, lyric: LyricLine): void {
+  private async scheduleDisappear(lyricId: string): Promise<void> {
     const element = document.getElementById(lyricId);
     if (!element) return;
 
-    const disappearTimeline = createExitAnimation(element, {
+    const disappearTimeline = await createExitAnimation(element, {
       stagger: 0.02,
       duration: 0.4,
       blur: 8,
       direction: 'forward'
     });
 
-    this.state.gsapExitTimeline = disappearTimeline;
-
+    this.state.gsapExitTimeline = disappearTimeline as import('../types/terminal').Timeline;
     disappearTimeline.eventCallback('onComplete', () => {
       if (element.parentNode) {
         element.remove();

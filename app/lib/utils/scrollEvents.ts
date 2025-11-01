@@ -1,39 +1,30 @@
 import type { ScrollEvents, ScrollEventsOptions, ScrollEventOptions } from '../../types/core';
+import { getScrollPosition } from './hookUtils';
 
 export function createScrollEvents({ isIos = false }: ScrollEventsOptions = {}): ScrollEvents {
   const items: ScrollEvents['items'] = [];
+  let rafId: number | null = null;
+  let frameCache: Map<HTMLElement, DOMRect> = new Map();
+  let cacheFrameId: number = 0;
+  let currentFrameId: number = 0;
 
   function add(o: ScrollEventOptions): void {
     items.push({
       element: o.element,
       triggerElement: 'triggerElement' in o && o.triggerElement ? o.triggerElement : o.element,
-      enter: 'enter' in o ? o.enter : null,
-      leave: 'leave' in o ? o.leave : null,
-      mode: 'mode' in o ? o.mode : 4,
-      threshold: 'threshold' in o ? o.threshold : 0.25,
-      offset: 'offset' in o ? o.offset : 0,
-      initialState: 'initialState' in o ? o.initialState : null,
+      enter: 'enter' in o ? (o.enter ?? null) : null,
+      leave: 'leave' in o ? (o.leave ?? null) : null,
+      mode: ('mode' in o && o.mode !== undefined) ? o.mode : 4,
+      threshold: ('threshold' in o && o.threshold !== undefined) ? o.threshold : 0.25,
+      offset: ('offset' in o && o.offset !== undefined) ? o.offset : 0,
+      initialState: 'initialState' in o ? (o.initialState ?? null) : null,
       state: false,
     });
   }
 
   function handler(): void {
-    let height: number;
-    let top: number;
-    let bottom: number;
-    let scrollPad: number;
-
-    if (isIos) {
-      height = document.documentElement.clientHeight;
-      top = document.body.scrollTop + window.scrollY;
-      bottom = top + height;
-      scrollPad = 125;
-    } else {
-      height = document.documentElement.clientHeight;
-      top = document.documentElement.scrollTop;
-      bottom = top + height;
-      scrollPad = 0;
-    }
+    const scrollPos = getScrollPosition(isIos);
+    const { top, bottom, height, scrollPad } = scrollPos;
 
     items.forEach((item) => {
       if (!item.enter && !item.leave) return;
@@ -46,7 +37,15 @@ export function createScrollEvents({ isIos = false }: ScrollEventsOptions = {}):
         }
         return;
       }
-      const bcr = item.triggerElement.getBoundingClientRect();
+      
+      let bcr: DOMRect;
+      if (frameCache.has(item.triggerElement) && cacheFrameId === currentFrameId) {
+        bcr = frameCache.get(item.triggerElement)!;
+      } else {
+        bcr = item.triggerElement.getBoundingClientRect();
+        frameCache.set(item.triggerElement, bcr);
+        cacheFrameId = currentFrameId;
+      }
       const elementTop = top + Math.floor(bcr.top);
       const elementBottom = elementTop + bcr.height;
       let viewportTop: number;
@@ -112,13 +111,37 @@ export function createScrollEvents({ isIos = false }: ScrollEventsOptions = {}):
     });
   }
 
+  function rafHandler(): void {
+    currentFrameId++;
+    frameCache.clear();
+    handler();
+    rafId = null;
+  }
+
+  function throttledHandler(): void {
+    if (rafId === null) {
+      rafId = requestAnimationFrame(rafHandler);
+    }
+  }
+
   function init(): void {
     window.addEventListener('load', handler);
-    window.addEventListener('resize', handler);
-    window.addEventListener('scroll', handler);
+    window.addEventListener('resize', throttledHandler);
+    window.addEventListener('scroll', throttledHandler);
     handler();
   }
 
-  return { items, add, handler, init };
+  function cleanup(): void {
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+    window.removeEventListener('load', handler);
+    window.removeEventListener('resize', throttledHandler);
+    window.removeEventListener('scroll', throttledHandler);
+    frameCache.clear();
+  }
+
+  return { items, add, handler, init, cleanup };
 }
 

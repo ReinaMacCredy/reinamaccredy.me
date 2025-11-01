@@ -1,7 +1,18 @@
-import { gsap } from 'gsap';
 import SplitType from 'split-type';
+import type { Timeline } from '../types/terminal';
+import { logger } from '../lib/utils/logger';
 
-export function createEntranceAnimation(element: HTMLElement, text: string): gsap.core.Timeline {
+let gsapPromise: Promise<typeof import('gsap').gsap> | null = null;
+
+async function getGsap(): Promise<typeof import('gsap').gsap> {
+  if (!gsapPromise) {
+    gsapPromise = import('gsap').then(m => m.gsap);
+  }
+  return gsapPromise;
+}
+
+export async function createEntranceAnimation(element: HTMLElement, text: string): Promise<Timeline> {
+  const gsap = await getGsap();
   gsap.killTweensOf(element);
   
   const lyricsZone = element.closest('#lyrics-zone') || document.getElementById('lyrics-zone');
@@ -63,7 +74,8 @@ export function createEntranceAnimation(element: HTMLElement, text: string): gsa
     
     return tl;
   } catch (error) {
-    console.warn('SplitType failed, using fallback animation:', error);
+    logger.warn('SplitType failed, using fallback animation:', error);
+    const gsap = await getGsap();
     const tl = gsap.timeline();
     gsap.set(element, { opacity: 0, y: 20 });
     tl.to(element, {
@@ -76,7 +88,7 @@ export function createEntranceAnimation(element: HTMLElement, text: string): gsa
   }
 }
 
-export function createExitAnimation(
+export async function createExitAnimation(
   element: HTMLElement,
   options?: {
     stagger?: number;
@@ -84,7 +96,8 @@ export function createExitAnimation(
     blur?: number;
     direction?: 'forward' | 'reverse' | 'center' | 'random';
   }
-): gsap.core.Timeline {
+): Promise<Timeline> {
+  const gsap = await getGsap();
   gsap.killTweensOf(element);
   
   const stagger = options?.stagger ?? 0.02;
@@ -102,13 +115,13 @@ export function createExitAnimation(
       });
       chars = element.querySelectorAll<HTMLElement>('.char');
     } catch (error) {
-      console.warn('SplitType failed for exit animation, using fallback:', error);
+      logger.warn('SplitType failed for exit animation, using fallback:', error);
     }
   }
   
   const tl = gsap.timeline();
   
-  let staggerConfig: number | gsap.StaggerVars;
+  let staggerConfig: number | { each: number; from?: 'end' | 'center' | 'random' };
   if (chars.length > 0) {
     switch (direction) {
       case 'reverse':
@@ -146,8 +159,8 @@ export function createExitAnimation(
 }
 
 export function killAllAnimations(
-  entranceTimeline: gsap.core.Timeline | null | undefined,
-  exitTimeline: gsap.core.Timeline | null | undefined
+  entranceTimeline: Timeline | null | undefined,
+  exitTimeline: Timeline | null | undefined
 ): void {
   if (entranceTimeline) {
     entranceTimeline.kill();
