@@ -50,7 +50,22 @@ export interface TerminalCommandDefinition {
   command: string;
   display: string;
   description: string;
-  body?: () => void | Promise<void>;
+  body?: () => string | Promise<string>;
+}
+
+export interface GitHubUser {
+  avatar_url?: string;
+  name?: string;
+  followers?: number;
+  following?: number;
+}
+
+export interface GitHubRepo {
+  name?: string;
+  html_url?: string;
+  fork?: boolean;
+  stargazers_count?: number;
+  forks_count?: number;
 }
 
 export type TerminalOutputType = 'prompt' | 'output' | 'error' | 'command';
