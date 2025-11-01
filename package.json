@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "next build && bun server.ts",
+    "dev": "next build && bun scripts/server.ts",
     "build": "next build",
     "start": "next start",
-    "serve": "bun server.ts",
+    "serve": "bun scripts/server.ts",
     "clean": "rm -rf .next out"
   },
   "dependencies": {
