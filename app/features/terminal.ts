@@ -43,12 +43,22 @@ export class Terminal {
     // Initialize services
     this.githubService = new GitHubService('reinamaccredy', 'ReinaMacCredy');
 
-    this.audioManager = new AudioManager(this.audioSrc, (item) => this.addTerminalOutput(item));
-
     this.lyricsManager = new LyricsManager({
       getCurrentTime: () => this.audioManager.getCurrentTime(),
       isPlaying: () => this.audioManager.isPlaying()
     });
+
+    this.audioManager = new AudioManager(
+      this.audioSrc,
+      (item) => this.addTerminalOutput(item),
+      () => {
+        // Auto-start lyrics when audio begins playing
+        const lyricsState = this.lyricsManager.getState();
+        if (lyricsState.lyrics.length > 0 && !this.lyricsManager.isDisplaying()) {
+          this.lyricsManager.startSync();
+        }
+      }
+    );
 
     this.commandManager = new CommandManager(
       this.githubService,

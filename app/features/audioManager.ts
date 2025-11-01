@@ -8,10 +8,12 @@ export class AudioManager {
   private state: AudioState;
   private audioSrc: string;
   private onOutput?: (item: TerminalOutput) => void;
+  private onPlayStart?: () => void;
 
-  constructor(audioSrc: string, onOutput?: (item: TerminalOutput) => void) {
+  constructor(audioSrc: string, onOutput?: (item: TerminalOutput) => void, onPlayStart?: () => void) {
     this.audioSrc = audioSrc;
     this.onOutput = onOutput;
+    this.onPlayStart = onPlayStart;
     this.state = {
       audio: null,
       isPlaying: false,
@@ -45,6 +47,10 @@ export class AudioManager {
         this.state.isPlaying = false;
         this.state.hasCompletedInitialPlay = true;
         this.state.isWaitingForStartCommand = true;
+      });
+
+      a.addEventListener('play', () => {
+        this.onPlayStart?.();
       });
     }
     return this.state.audio;
