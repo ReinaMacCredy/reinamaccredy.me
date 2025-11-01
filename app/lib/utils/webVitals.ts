@@ -1,3 +1,5 @@
+import { logger } from './logger'
+
 interface LayoutShift extends PerformanceEntry {
   value: number
   hadRecentInput: boolean
@@ -36,6 +38,7 @@ function reportMetric(metric: WebVitalsMetric): void {
     try {
       handler(metric)
     } catch (error) {
+      logger.error('Failed to report web vitals metric:', metric.name, error)
     }
   })
 }
@@ -68,6 +71,7 @@ export function initLCP(): void {
 
     observer.observe({ entryTypes: ['largest-contentful-paint'] })
   } catch (error) {
+    logger.error('Failed to initialize LCP observer:', error)
   }
 }
 
@@ -94,6 +98,7 @@ export function initFID(): void {
 
     observer.observe({ entryTypes: ['first-input'] })
   } catch (error) {
+    logger.error('Failed to initialize FID observer:', error)
   }
 }
 
@@ -137,6 +142,7 @@ export function initCLS(): void {
 
     observer.observe({ entryTypes: ['layout-shift'] })
   } catch (error) {
+    logger.error('Failed to initialize CLS observer:', error)
   }
 }
 
@@ -160,6 +166,7 @@ export function initFCP(): void {
 
     observer.observe({ entryTypes: ['paint'] })
   } catch (error) {
+    logger.error('Failed to initialize FCP observer:', error)
   }
 }
 
@@ -179,6 +186,7 @@ export function initTTFB(): void {
       })
     }
   } catch (error) {
+    logger.error('Failed to initialize TTFB metric:', error)
   }
 }
 
